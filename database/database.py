@@ -1,10 +1,12 @@
 from services.file_handling import book
 
 
-class User:
+class Book:
     def __init__(self):
         self.page = 1
         self.bookmarks = {}
+        self.text = book
+        self.book_len = len(book)
 
     def next_page(self):
         if self.page == len(book):
@@ -36,9 +38,9 @@ class UsersDB:
         return user_id in self.users_db.keys()
 
     def add_user(self, user_id: int) -> None:
-        self.users_db[user_id] = User()
+        self.users_db[user_id] = Book()
 
-    def get_user_by_id(self, user_id: int) -> User:
+    def get_book_by_user_id(self, user_id: int) -> Book:
         return self.users_db[user_id]
 
 

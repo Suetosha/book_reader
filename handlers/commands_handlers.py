@@ -5,7 +5,6 @@ from aiogram import Router
 from database.database import db
 from keyboards.pagination_kb import create_inline_kb
 from keyboards.bookmarks_kb import create_bookmarks_kb
-from services.file_handling import book
 
 router = Router()
 
@@ -25,23 +24,23 @@ async def process_help_command(message: Message):
 
 @router.message(Command(commands='beginning'))
 async def process_beginning_command(message: Message):
-    user = db.get_user_by_id(message.from_user.id)
-    user.page = 1
-    await message.answer(text=book[user.page], reply_markup=create_inline_kb(user.page, len(book)))
+    book = db.get_book_by_user_id(message.from_user.id)
+    book.update_page(1)
+    await message.answer(text=book.text[book.page], reply_markup=create_inline_kb(book.page, book.book_len))
 
 
 @router.message(Command(commands='continue'))
 async def process_continue_command(message: Message):
-    user = db.get_user_by_id(message.from_user.id)
-    await message.answer(text=book[user.page], reply_markup=create_inline_kb(user.page, len(book)))
+    book = db.get_book_by_user_id(message.from_user.id)
+    await message.answer(text=book.text[book.page], reply_markup=create_inline_kb(book.page, book.book_len))
 
 
 @router.message(Command(commands='bookmarks'))
 async def process_bookmarks_command(message: Message):
-    user = db.get_user_by_id(message.from_user.id)
+    book = db.get_book_by_user_id(message.from_user.id)
 
-    if user.bookmarks:
-        await message.answer(text=LEXICON['your_bookmarks'], reply_markup=create_bookmarks_kb(user.bookmarks))
+    if book.bookmarks:
+        await message.answer(text=LEXICON['your_bookmarks'], reply_markup=create_bookmarks_kb(book.bookmarks))
     else:
         await message.answer(text=LEXICON['no_bookmarks'])
 
