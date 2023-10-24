@@ -1,14 +1,15 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-import constants.callback_data as callback_data
+import constants.callback_data as callback_data_types
 from lexicon.lexicon import LEXICON_KB_BTN
+from utils.callback_factories import DeleteCallbackFactory, EditCallbackFactory
 
 
 def create_bookmarks_kb(bookmarks):
     bookmarks_buttons = [[InlineKeyboardButton(text=f'{page} - {preview}',
-                          callback_data=str(page))] for page, preview in bookmarks.items()]
+                          callback_data=EditCallbackFactory(page=page).pack())] for page, preview in bookmarks.items()]
 
-    options_buttons = [InlineKeyboardButton(text=LEXICON_KB_BTN['edit'], callback_data=callback_data.EDIT),
-                       InlineKeyboardButton(text=LEXICON_KB_BTN['cancel'], callback_data=callback_data.CANCEL)]
+    options_buttons = [InlineKeyboardButton(text=LEXICON_KB_BTN['edit'], callback_data=callback_data_types.EDIT),
+                       InlineKeyboardButton(text=LEXICON_KB_BTN['cancel'], callback_data=callback_data_types.CANCEL)]
 
     inline_bookmarks_kb = InlineKeyboardMarkup(inline_keyboard=bookmarks_buttons + [options_buttons])
 
@@ -17,9 +18,9 @@ def create_bookmarks_kb(bookmarks):
 
 def edit_bookmarks_kb(bookmarks):
     edit_bookmarks_buttons = [[InlineKeyboardButton(text=f"{LEXICON_KB_BTN['x']} {page} - {preview}",
-                               callback_data=callback_data.DELETE + str(page))] for page, preview in bookmarks.items()]
+                               callback_data=DeleteCallbackFactory(page=page).pack())] for page, preview in bookmarks.items()]
 
-    cancel_btn = [InlineKeyboardButton(text=LEXICON_KB_BTN['cancel'], callback_data=callback_data.CANCEL)]
+    cancel_btn = [InlineKeyboardButton(text=LEXICON_KB_BTN['cancel'], callback_data=callback_data_types.CANCEL)]
 
     inline_edit_bookmarks_kb = InlineKeyboardMarkup(inline_keyboard=edit_bookmarks_buttons + [cancel_btn])
 
